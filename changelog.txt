@@ -1,0 +1,15 @@
+
+V 2.0.0
+* Support for literal expression such as #! /usr/bin/env node (starting with '#!')
+* Support for file extensions through CLI parameter
+* Added support for Type Definition Files
+* Added support for React - JSX, TSX -files
+* Pre process execution
+* Added logic of excluded paths
+ 
+
+V 1.3.9
+Cut alias prefix for mapping comparison
+Fixes bug regarding Aliases starting with same char seq, e.g @db and @dbCore
+
+outDir should be independent of baseUrl #2
