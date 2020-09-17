@@ -72,7 +72,7 @@ export class TSPath {
 
 		if (filter.length === 0) {
 			Log.fatalError("File filter missing!");
-			process.exit(23);
+			process.exit(23 );
 		}
 
 		this.engine.compactMode = compactOutput;
@@ -109,6 +109,7 @@ export class TSPath {
 	 * @param {TSPathResult} resultData
 	 */
 	private displayResults(resultData: TSPathResult) {
+		console.log("pokpokpok ::::", resultData);
 		Log.info("Total files processed:", resultData.nrFilesProcessed);
 		Log.info("Total paths processed:", resultData.nrPathsProcessed);
 

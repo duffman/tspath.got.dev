@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const tspath_log_1 = require("../tspath-log");
 function DrawLogo() {
     tspath_log_1.Log.logGreen("  _______    _____        _    _          ");
-    tspath_log_1.Log.logGreen(" |__   __|  |  __ \      | |  | |         ");
+    tspath_log_1.Log.logGreen(" |__   __|  |  __ \       | |  | |         ");
     tspath_log_1.Log.logGreen("    | | ___ | |__) |__ _ | |_ | |__       ");
     tspath_log_1.Log.logGreen("    | |/ __||  ___// _` || __|| '_ \      ");
     tspath_log_1.Log.logGreen("    | |\__ \| |   | (_| || |_ | | | |     ");

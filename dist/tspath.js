@@ -68,8 +68,8 @@ class TSPath {
      * @param {TSPathResult} resultData
      */
     displayResults(resultData) {
+        console.log("pokpokpok ::::", resultData);
         tspath_log_1.Log.info("Total files processed:", resultData.nrFilesProcessed);
-        tspath_log_1.Log.info("Total paths processed:", resultData.nrPathsProcessed);
         tspath_log_1.Log.info("Total paths processed:", resultData.nrPathsProcessed);
         tspath_log_1.Log.infoSummary(`Operation took: ${resultData.processTime} ms`);
         tspath_log_1.Log.logGreen(`Project is prepared, now run it normally!`);

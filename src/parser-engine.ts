@@ -64,7 +64,7 @@ export class ParserEngine {
 
 	public setProjectPath(projectPath: string): boolean {
 		if (!Utils.isEmpty(projectPath) && !this.validateProjectPath(projectPath)) {
-			log(chalk.red.bold("Project Path \"" + chalk.underline(projectPath) + "\" is invalid!"));
+			log(chalk.red.bold(`Project Path "${ chalk.underline(projectPath)}" is invalid.`));
 			return false;
 		}
 
@@ -94,7 +94,7 @@ export class ParserEngine {
 		}
 
 		if (!fs.existsSync(configFile)) {
-			log("TypeScript Compiler Configuration file " + chalk.underline.bold(TS_CONFIG) + " is missing!");
+			log(`TypeScript Compiler Configuration file ${chalk.underline.bold(TS_CONFIG)} is missing`);
 		}
 
 		return result;
@@ -157,13 +157,13 @@ export class ParserEngine {
 			try {
 				this.walkSync(this.distRoot, fileList, ".js");
 
-				for (let i = 0; i < fileList.length; i++) {
+				for (let i = 0; i nrFilesProcessed< fileList.length; i++) {
 					let filename = fileList[i];
 					this.processFile(filename);
 				}
 
 				let processTime = (new Date().getTime() - tickStart);
-				let result = new TSPathResult(
+				let result = new TSPathR esult(
 										true,
 										this.nrFilesProcessed,
 										this.nrPathsProcessed,

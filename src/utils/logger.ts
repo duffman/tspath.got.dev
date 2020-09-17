@@ -20,13 +20,23 @@
  This software is subject to the LGPL v2 License, please find
  the full license attached in LICENCE.md
 
-=----------------------------------------------------------------= */
+ =---------------------------------------------------------------=
 
-export class TSPathResult {
-	constructor(
-		public success: boolean,
-		public nrFilesProcessed: number,
-		public nrPathsProcessed: number,
-		public processTime: number
-	) {}
+ This file is part of the TypeScript Path Igniter Project:
+ https://github.com/duffman/ts-path-igniter
+
+ Author: Patrik Forsberg <patrik.forsberg@coldmind.com>
+ Date: 2020-06-02
+
+ =---------------------------------------------------------------= */
+
+export class Log {
+	public static error(text: string, data?: any) {
+
+	}
+
+	public static fatalError(text: string, data?: any) {
+
+	}
+
 }
