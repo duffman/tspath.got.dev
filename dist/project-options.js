@@ -25,6 +25,15 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const tspath_log_1 = require("./tspath-log");
 class ProjectOptions {
+    constructor(projectPath, tsConfig) {
+        this.tsConfig = tsConfig;
+        this.pathMappings = {};
+        this.excludePaths = new Array();
+        this.outDir = tsConfig.compilerOptions.outDir;
+        this.baseUrl = tsConfig.compilerOptions.baseUrl;
+        this.processMappings(tsConfig.compilerOptions.paths);
+        this.parseExclude(tsConfig.exclude);
+    }
     //TODO: Support fallbacks
     processMappings(mappings) {
         for (let alias in mappings) {
@@ -36,15 +45,6 @@ class ProjectOptions {
         for (let index in excludes) {
             tspath_log_1.Log.debug("Exclude path ::", excludes[index]);
         }
-    }
-    constructor(projectPath, tsConfig) {
-        this.tsConfig = tsConfig;
-        this.pathMappings = {};
-        this.excludePaths = new Array();
-        this.outDir = tsConfig.compilerOptions.outDir;
-        this.baseUrl = tsConfig.compilerOptions.baseUrl;
-        this.processMappings(tsConfig.compilerOptions.paths);
-        this.parseExclude(tsConfig.exclude);
     }
 }
 exports.ProjectOptions = ProjectOptions;

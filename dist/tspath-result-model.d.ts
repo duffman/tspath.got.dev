@@ -1,7 +1,7 @@
 export declare class TSPathResult {
     success: boolean;
-    nrFilesProcessed: Number;
-    nrPathsProcessed: Number;
-    processTime: Number;
-    constructor(success: boolean, nrFilesProcessed: Number, nrPathsProcessed: Number, processTime: Number);
+    nrFilesProcessed: number;
+    nrPathsProcessed: number;
+    processTime: number;
+    constructor(success: boolean, nrFilesProcessed: number, nrPathsProcessed: number, processTime: number);
 }

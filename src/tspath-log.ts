@@ -24,8 +24,8 @@
 
 import { TSpathSettings } from './tspath-settings';
 
-const chalk = require("chalk");
-const log = console.log;
+const chalk      = require("chalk");
+const log        = console.log;
 const PREFIX_SEP = ":::";
 
 enum LogLevel {
@@ -34,8 +34,8 @@ enum LogLevel {
 	Error
 }
 
-export class Log{
-	private static clrError = chalk.bold.red;
+export class Log {
+	private static clrError   = chalk.bold.red;
 	private static clrWarning = chalk.bold.yellow;
 
 	public static setLogLevel(level: LogLevel): void {
@@ -52,7 +52,7 @@ export class Log{
 	}
 
 	private static compileLog(label: string, data: any = null): string {
-		return data !== null ? `${label} ${PREFIX_SEP} ${Log.toDataString(data)}` : label;
+		return data !== null ? `${ label } ${ PREFIX_SEP } ${ Log.toDataString(data) }` : label;
 	}
 
 	public static warning(label: string, data: any = null) {
@@ -86,7 +86,8 @@ export class Log{
 	public static log(logMessage: string, logData: any = null) {
 		if (logData != null) {
 			log(chalk.green(logMessage), logData);
-		} else {
+		}
+		else {
 			log(chalk.yellow(logMessage));
 		}
 	}
@@ -126,10 +127,12 @@ export class Log{
 	}
 
 	public static logErrorMessage(errorMessage: string, error: Error = null) {
-		if (error == null)
+		if (error == null) {
 			log(this.error(errorMessage))
-		else
+		}
+		else {
 			log(this.error(errorMessage), error);
+		}
 	}
 
 	public static logGreen(logMessage: string, logData: any = null) {
@@ -150,10 +153,12 @@ export class Log{
 	}
 
 	public static logPurple(logMessage: string, logData: any = null) {
-		if (logData == null)
+		if (logData == null) {
 			log(chalk.magenta(logMessage));
-		else
+		}
+		else {
 			log(chalk.magenta(logMessage), logData);
+		}
 	}
 
 	public static logImportant(prefix: string, logMessage: string) {

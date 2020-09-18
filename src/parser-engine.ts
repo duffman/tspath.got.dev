@@ -20,42 +20,41 @@
  This software is subject to the LGPL v2 License, please find
  the full license attached in LICENCE.md
 
-=----------------------------------------------------------------= */
+ =----------------------------------------------------------------= */
 
-import {TSPathResult} from "./tspath-result-model";
+import * as os                 from "os";
+import { ParserPreProcess }    from "./parser-pre-process";
+import { TSConfigParser }      from "./parsers/tsconfig-parser";
+import { ProjectOptions }      from "./project-options";
+import { Log }                 from "./tspath-log";
+import { TSPathResult }        from "./tspath-result-model";
+import { TSpathSettings }      from './tspath-settings';
+import { TS_CONFIG }           from "./type-definitions";
+import { FILE_ENCODING }       from "./type-definitions";
+import { Utils }               from "./utils";
+import { JsonCommentStripper } from "./utils/json-comment-stripper";
 
-let fs             = require("fs");
-let path           = require('path');
-let esprima        = require("esprima");
-let escodegen      = require("escodegen");
-let chalk          = require("chalk");
+let fs        = require("fs");
+let path      = require('path');
+let esprima   = require("esprima");
+let escodegen = require("escodegen");
+let chalk     = require("chalk");
 
-import { Utils }                from "./utils";
-import { JsonCommentStripper }  from "./utils/json-comment-stripper";
-import { ProjectOptions }       from "./project-options";
-import { TS_CONFIG }            from "./type-definitions";
-import { FILE_ENCODING }        from "./type-definitions";
-import { TSConfigData }         from "./parsers/tsconfig-parser";
-import { TSConfigParser }       from "./parsers/tsconfig-parser";
-
-import * as os from "os";
-import {Log} from "./tspath-log";
-import {TSpathSettings} from './tspath-settings';
-
-const log          = console.log;
+const log = console.log;
 
 export class ParserEngine {
 	public projectPath: string;
 
-	nrFilesProcessed : number = 0;
-	nrPathsProcessed : number = 0;
-	appRoot          : string;
-	distRoot         : string;
-	compactMode      : boolean = true;
-	projectOptions   : ProjectOptions;
-	fileFilter       : Array<string>;
+	nrFilesProcessed: number = 0;
+	nrPathsProcessed: number = 0;
+	appRoot: string;
+	distRoot: string;
+	compactMode: boolean     = true;
+	projectOptions: ProjectOptions;
+	fileFilter: Array<string>;
 
-	constructor() {}
+	constructor() {
+	}
 
 	public exit(code: number = 5) {
 		console.log("Terminating...");
@@ -64,7 +63,7 @@ export class ParserEngine {
 
 	public setProjectPath(projectPath: string): boolean {
 		if (!Utils.isEmpty(projectPath) && !this.validateProjectPath(projectPath)) {
-			log(chalk.red.bold(`Project Path "${ chalk.underline(projectPath)}" is invalid.`));
+			log(chalk.red.bold(`Project Path "${ chalk.underline(projectPath) }" is invalid.`));
 			return false;
 		}
 
@@ -94,7 +93,7 @@ export class ParserEngine {
 		}
 
 		if (!fs.existsSync(configFile)) {
-			log(`TypeScript Compiler Configuration file ${chalk.underline.bold(TS_CONFIG)} is missing`);
+			log(`TypeScript Compiler Configuration file ${ chalk.underline.bold(TS_CONFIG) } is missing`);
 		}
 
 		return result;
@@ -105,15 +104,15 @@ export class ParserEngine {
 	 * @returns {string}
 	 */
 	private readProjectName(): string {
-		let commentStripper = new JsonCommentStripper();
+		let commentStripper     = new JsonCommentStripper();
 		let projectName: string = null;
-		let filename = path.resolve(this.projectPath, "package.json");
+		let filename            = path.resolve(this.projectPath, "package.json");
 
 		if (fs.existsSync(filename)) {
 			let contents = fs.readFileSync(filename, 'utf8');
-			contents = commentStripper.stripComments(contents);
-			let jsonObj = JSON.parse(contents);
-			projectName = jsonObj.name;
+			contents     = commentStripper.stripComments(contents);
+			let jsonObj  = JSON.parse(contents);
+			projectName  = jsonObj.name;
 
 			if (TSpathSettings.DebugMode) {
 				Log.info("---");
@@ -130,7 +129,7 @@ export class ParserEngine {
 	 * Parse project and resolve paths
 	 */
 	public execute(): Promise<TSPathResult> {
-		const  PROCESS_TIME = "Operation finished in";
+		const PROCESS_TIME = "Operation finished in";
 		console.time(PROCESS_TIME);
 		let tickStart = new Date().getTime();
 
@@ -140,15 +139,16 @@ export class ParserEngine {
 		}
 
 		this.projectOptions = this.readConfig();
-		let projectName = this.readProjectName();
+		let projectName     = this.readProjectName();
 
 		if (!Utils.isEmpty(projectName)) {
 			log(chalk.yellow("Parsing project: ") + chalk.bold(projectName) + " " + chalk.underline(this.projectPath));
-		} else {
-			log(chalk.yellow.bold("Parsing project at: ") + '"' +  this.projectPath + '"');
+		}
+		else {
+			log(chalk.yellow.bold("Parsing project at: ") + '"' + this.projectPath + '"');
 		}
 
-		this.appRoot = path.resolve(this.projectPath, this.projectOptions.baseUrl);
+		this.appRoot  = path.resolve(this.projectPath, this.projectOptions.baseUrl);
 		this.distRoot = path.resolve(this.projectPath, this.projectOptions.outDir);
 
 		let fileList = new Array<string>();
@@ -157,22 +157,30 @@ export class ParserEngine {
 			try {
 				this.walkSync(this.distRoot, fileList, ".js");
 
-				for (let i = 0; i nrFilesProcessed< fileList.length; i++) {
+				for (let i = 0; i < fileList.length; i++) {
 					let filename = fileList[i];
 					this.processFile(filename);
 				}
 
+				/**** ????
+				for (let i = 0; i < nrFilesProcessed< fileList.length; i++) {
+					let filename = fileList[i];
+					this.processFile(filename);
+				}
+				 */
+
 				let processTime = (new Date().getTime() - tickStart);
-				let result = new TSPathR esult(
-										true,
-										this.nrFilesProcessed,
-										this.nrPathsProcessed,
-										processTime
-									);
+				let result      = new TSPathResult(
+					true,
+					this.nrFilesProcessed,
+					this.nrPathsProcessed,
+					processTime
+				);
 
 				resolve(result);
 
-			} catch (err) {
+			}
+			catch (err) {
 				reject(err);
 			}
 		});
@@ -180,7 +188,7 @@ export class ParserEngine {
 
 	/**
 	 *
- 	 * @param sourceFilename
+	 * @param sourceFilename
 	 * @param jsRequire - require in javascript source "require("jsRequire")
 	 * @returns {string}
 	 */
@@ -191,7 +199,7 @@ export class ParserEngine {
 			let mapping = options.pathMappings[alias];
 
 			//TODO: Handle * properly
-			alias = Utils.stripWildcard(alias);
+			alias   = Utils.stripWildcard(alias);
 			mapping = Utils.stripWildcard(mapping);
 
 			// 2018-06-02: Workaround for bug with same prefix Aliases e.g @db and @dbCore
@@ -204,7 +212,7 @@ export class ParserEngine {
 				result = Utils.ensureTrailingPathDelimiter(result);
 
 				let absoluteJsRequire = path.join(this.distRoot, result);
-				let sourceDir = path.dirname(sourceFilename);
+				let sourceDir         = path.dirname(sourceFilename);
 
 				let relativePath = path.relative(sourceDir, absoluteJsRequire);
 
@@ -230,7 +238,7 @@ export class ParserEngine {
 	 * @returns {any}
 	 */
 	processJsRequire(node: any, sourceFilename: string): any {
-		let resultNode = node;
+		let resultNode      = node;
 		let requireInJsFile = Utils.safeGetAstNodeValue(node);
 
 		/* Only proceed if the "require" contains a full file path, not
@@ -238,7 +246,11 @@ export class ParserEngine {
 		 */
 		if (!Utils.isEmpty(requireInJsFile) && Utils.fileHavePath(requireInJsFile)) {
 			let relativePath = this.getRelativePathForRequiredFile(sourceFilename, requireInJsFile);
-			resultNode = {type: "Literal", value: relativePath, raw: relativePath};
+			resultNode       = {
+				type:  "Literal",
+				value: relativePath,
+				raw:   relativePath
+			};
 
 			this.nrPathsProcessed++;
 		}
@@ -246,7 +258,9 @@ export class ParserEngine {
 		return resultNode;
 	}
 
-	private preProcess() {}
+	private preProcess() {
+		ParserPreProcess.in
+	}
 
 	/**
 	 * Extracts all the requires from a single file and processes the paths
@@ -256,9 +270,9 @@ export class ParserEngine {
 		const SHEBANG = "#!";
 		this.nrFilesProcessed++;
 
-		let scope = this;
+		let scope                   = this;
 		let inputSourceCode: string = fs.readFileSync(filename, FILE_ENCODING);
-		let sbLine: string = null;
+		let sbLine: string          = null;
 
 		//
 		// Quick Hack: Parse file header to allow a single shebang
@@ -266,10 +280,10 @@ export class ParserEngine {
 		//
 		if (inputSourceCode.substr(0, 2) === SHEBANG) {
 			let eol = inputSourceCode.indexOf(os.EOL, 0);
-			sbLine = inputSourceCode.substr(0, eol);
+			sbLine  = inputSourceCode.substr(0, eol);
 
-			Log.error("SHEBANG Detected" + sbLine + " :: ",filename );
-			Log.error(`Stepping over Shebang "${SHEBANG}"...`);
+			Log.error("SHEBANG Detected" + sbLine + " :: ", filename);
+			Log.error(`Stepping over Shebang "${ SHEBANG }"...`);
 
 			inputSourceCode = inputSourceCode.substr(eol, inputSourceCode.length);
 		}
@@ -279,19 +293,25 @@ export class ParserEngine {
 		try {
 			ast = esprima.parse(inputSourceCode); //, { raw: true, tokens: true, range: true, comment: true });
 		}
-		catch(error) {
+		catch (error) {
 			console.log("Unable to parse file:", filename);
 			console.log("Error:", error);
 			this.exit();
 		}
 
-		this.traverseSynTree(ast, this, function(node) {
+		this.traverseSynTree(ast, this, function (node) {
 			if (node != undefined && node.type == "CallExpression" && node.callee.name == "require") {
 				node.arguments[0] = scope.processJsRequire(node.arguments[0], filename);
 			}
 		});
 
-		let option = { comment: true, format: { compact: this.compactMode,  quotes: '"' }};
+		let option      = {
+			comment: true,
+			format:  {
+				compact: this.compactMode,
+				quotes:  '"'
+			}
+		};
 		let finalSource = escodegen.generate(ast, option);
 
 		try {
@@ -302,7 +322,7 @@ export class ParserEngine {
 
 			this.saveFileContents(filename, finalSource);
 		}
-		catch(error) {
+		catch (error) {
 			log(chalk.bold.red("Unable to write file:"), filename);
 			this.exit();
 		}
@@ -318,7 +338,7 @@ export class ParserEngine {
 		fs.writeFileSync(filename, fileContents, FILE_ENCODING, error);
 
 		if (error) {
-			throw Error("Could not save file: " +  filename);
+			throw Error("Could not save file: " + filename);
 		}
 	}
 
@@ -331,14 +351,14 @@ export class ParserEngine {
 		let fileData = fs.readFileSync(path.resolve(this.projectPath, fileName), FILE_ENCODING);
 
 		let jsonCS = new JsonCommentStripper();
-		fileData = jsonCS.stripComments(fileData);
+		fileData   = jsonCS.stripComments(fileData);
 
-		let tsConfig = TSConfigParser.toTsConfigData(fileData);
+		let tsConfig    = TSConfigParser.toTsConfigData(fileData);
 		let compilerOpt = tsConfig.compilerOptions;
 
-		let reqFields = [];
+		let reqFields        = [];
 		reqFields["baseUrl"] = compilerOpt.baseUrl;
-		reqFields["outDir"] = compilerOpt.outDir;
+		reqFields["outDir"]  = compilerOpt.outDir;
 
 		for (let key in reqFields) {
 			let field = reqFields[key];
@@ -365,10 +385,11 @@ export class ParserEngine {
 
 				if (typeof child === 'object' && child !== null) {
 					if (Array.isArray(child)) {
-						child.forEach(function(ast) { //5
+						child.forEach(function (ast) { //5
 							scope.traverseSynTree(ast, scope, func);
 						});
-					} else {
+					}
+					else {
 						scope.traverseSynTree(child, scope, func);
 					}
 				}
@@ -382,7 +403,9 @@ export class ParserEngine {
 	 * @returns {boolean}
 	 */
 	private matchExtension(fileExtension: string): boolean {
-		if (Utils.isEmpty(fileExtension) || this.fileFilter.length == 0) return false;
+		if (Utils.isEmpty(fileExtension) || this.fileFilter.length == 0) {
+			return false;
+		}
 		return this.fileFilter.indexOf(fileExtension) > -1;
 	}
 
@@ -394,9 +417,9 @@ export class ParserEngine {
 	 * @returns {Array<string>}
 	 */
 	public walkSync(dir: string, filelist: Array<string>, fileExtension?: string) {
-		let scope = this;
-		let	files = fs.readdirSync(dir);
-		filelist = filelist || [];
+		let scope     = this;
+		let files     = fs.readdirSync(dir);
+		filelist      = filelist || [];
 		fileExtension = fileExtension === undefined ? "" : fileExtension;
 
 		for (let i = 0; i < files.length; i++) {

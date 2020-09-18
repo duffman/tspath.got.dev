@@ -22,53 +22,61 @@
  the full license attached in LICENCE.md
 
  =----------------------------------------------------------------= */
-Object.defineProperty(exports, "__esModule", { value: true });
-const tspath_settings_1 = require("./tspath-settings");
-const chalk = require("chalk");
-const log = console.log;
-const PREFIX_SEP = ":::";
+exports.__esModule = true;
+var tspath_settings_1 = require("./tspath-settings");
+var chalk = require("chalk");
+var log = console.log;
+var PREFIX_SEP = ":::";
 var LogLevel;
 (function (LogLevel) {
     LogLevel[LogLevel["All"] = 0] = "All";
     LogLevel[LogLevel["Warning"] = 1] = "Warning";
     LogLevel[LogLevel["Error"] = 2] = "Error";
 })(LogLevel || (LogLevel = {}));
-class Log {
-    static setLogLevel(level) {
+var Log = /** @class */ (function () {
+    function Log() {
     }
-    static toDataString(data) {
-        let result = "";
+    Log.setLogLevel = function (level) {
+    };
+    Log.toDataString = function (data) {
+        var result = "";
         if (typeof data === "string") {
             result = data;
         }
         return result;
-    }
-    static compileLog(label, data = null) {
-        return data !== null ? `${label} ${PREFIX_SEP} ${Log.toDataString(data)}` : label;
-    }
-    static warning(label, data = null) {
+    };
+    Log.compileLog = function (label, data) {
+        if (data === void 0) { data = null; }
+        return data !== null ? label + " " + PREFIX_SEP + " " + Log.toDataString(data) : label;
+    };
+    Log.warning = function (label, data) {
+        if (data === void 0) { data = null; }
         log(chalk.yellow(Log.compileLog(label, data)));
-    }
-    static info(label, data = null) {
+    };
+    Log.info = function (label, data) {
+        if (data === void 0) { data = null; }
         log(chalk.bold.yellow(Log.compileLog(label, data)));
-    }
-    static infoSummary(label, data = null) {
+    };
+    Log.infoSummary = function (label, data) {
+        if (data === void 0) { data = null; }
         log(chalk.bold.cyan(Log.compileLog(label, data)));
-    }
-    static error(label, data = null) {
+    };
+    Log.error = function (label, data) {
+        if (data === void 0) { data = null; }
         log(chalk.bold.red(Log.compileLog(label, data)));
-    }
-    static spit() {
+    };
+    Log.spit = function () {
         console.log(" ");
-    }
-    static log(logMessage, logData = null) {
+    };
+    Log.log = function (logMessage, logData) {
+        if (logData === void 0) { logData = null; }
         if (logData != null) {
             log(chalk.green(logMessage), logData);
         }
         else {
             log(chalk.yellow(logMessage));
         }
-    }
+    };
     /**
      * Standard Debug Log
      *
@@ -76,57 +84,73 @@ class Log {
      * @param logMessage - The message to print
      * @param logData - Optional data such as data structures
      */
-    static debug(caller, logMessage, logData = "") {
+    Log.debug = function (caller, logMessage, logData) {
+        if (logData === void 0) { logData = ""; }
         if (tspath_settings_1.TSpathSettings.DebugMode) {
             log(chalk.cyan("#DEBUG :: " + caller.constructor.name + " :: " + logMessage), logData);
         }
-    }
-    static message(logMessage, logData = "") {
+    };
+    Log.message = function (logMessage, logData) {
+        if (logData === void 0) { logData = ""; }
         log(chalk.white(logMessage), logData);
-    }
-    static internalError(source, logMessage, logData = "") {
+    };
+    Log.internalError = function (source, logMessage, logData) {
+        if (logData === void 0) { logData = ""; }
         log(chalk.red("#ERROR :: " + source.constructor.name + " :: " + logMessage), logData);
-    }
-    static logCoreInfo(source, logMessage, logData = "") {
+    };
+    Log.logCoreInfo = function (source, logMessage, logData) {
+        if (logData === void 0) { logData = ""; }
         log(chalk.cyan("#DEBUG :: " + source.constructor.name + " :: " + logMessage), logData);
-    }
-    static fatalError(errorMessage, error = null) {
+    };
+    Log.fatalError = function (errorMessage, error) {
+        if (error === void 0) { error = null; }
         if (error == null) {
             log(chalk.white.underline.bgRed(errorMessage));
         }
         else {
             log(chalk.white.underline.bgRed(errorMessage), error);
         }
-    }
-    static logErrorMessage(errorMessage, error = null) {
-        if (error == null)
+    };
+    Log.logErrorMessage = function (errorMessage, error) {
+        if (error === void 0) { error = null; }
+        if (error == null) {
             log(this.error(errorMessage));
-        else
+        }
+        else {
             log(this.error(errorMessage), error);
-    }
-    static logGreen(logMessage, logData = null) {
+        }
+    };
+    Log.logGreen = function (logMessage, logData) {
+        if (logData === void 0) { logData = null; }
         logData = logData == null ? "" : logData;
         log(chalk.green(logMessage), logData);
-    }
-    static logYellow(logMessage, logData = "") {
+    };
+    Log.logYellow = function (logMessage, logData) {
+        if (logData === void 0) { logData = ""; }
         log(chalk.yellow(logMessage), logData);
-    }
-    static logCyan(logMessage, logData = "") {
+    };
+    Log.logCyan = function (logMessage, logData) {
+        if (logData === void 0) { logData = ""; }
         log(chalk.cyan(logMessage), logData);
-    }
-    static logBlue(logMessage, logData = "") {
+    };
+    Log.logBlue = function (logMessage, logData) {
+        if (logData === void 0) { logData = ""; }
         log(chalk.blue(logMessage), logData);
-    }
-    static logPurple(logMessage, logData = null) {
-        if (logData == null)
+    };
+    Log.logPurple = function (logMessage, logData) {
+        if (logData === void 0) { logData = null; }
+        if (logData == null) {
             log(chalk.magenta(logMessage));
-        else
+        }
+        else {
             log(chalk.magenta(logMessage), logData);
-    }
-    static logImportant(prefix, logMessage) {
+        }
+    };
+    Log.logImportant = function (prefix, logMessage) {
         log(chalk.bold.white.bgBlue("#" + prefix + ":") + chalk.white.bgMagenta(logMessage));
-    }
-}
+    };
+    Log.clrError = chalk.bold.red;
+    Log.clrWarning = chalk.bold.yellow;
+    return Log;
+}());
 exports.Log = Log;
-Log.clrError = chalk.bold.red;
-Log.clrWarning = chalk.bold.yellow;

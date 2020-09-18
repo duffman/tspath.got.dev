@@ -51,7 +51,7 @@ class ParserEngine {
     }
     setProjectPath(projectPath) {
         if (!utils_1.Utils.isEmpty(projectPath) && !this.validateProjectPath(projectPath)) {
-            log(chalk.red.bold("Project Path \"" + chalk.underline(projectPath) + "\" is invalid!"));
+            log(chalk.red.bold(`Project Path "${chalk.underline(projectPath)}" is invalid.`));
             return false;
         }
         this.projectPath = projectPath;
@@ -74,7 +74,7 @@ class ParserEngine {
             result = false;
         }
         if (!fs.existsSync(configFile)) {
-            log("TypeScript Compiler Configuration file " + chalk.underline.bold(type_definitions_1.TS_CONFIG) + " is missing!");
+            log(`TypeScript Compiler Configuration file ${chalk.underline.bold(type_definitions_1.TS_CONFIG)} is missing`);
         }
         return result;
     }
@@ -129,6 +129,12 @@ class ParserEngine {
                     let filename = fileList[i];
                     this.processFile(filename);
                 }
+                /**** ????
+                for (let i = 0; i < nrFilesProcessed< fileList.length; i++) {
+                    let filename = fileList[i];
+                    this.processFile(filename);
+                }
+                */
                 let processTime = (new Date().getTime() - tickStart);
                 let result = new tspath_result_model_1.TSPathResult(true, this.nrFilesProcessed, this.nrPathsProcessed, processTime);
                 resolve(result);
